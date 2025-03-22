@@ -9,8 +9,8 @@ import server
 import os
 from dotenv import load_dotenv
 
-SLACK_BOT_TOKEN = os.getenv('SLACK_BOT_TOKEN')  # Replace with your actual token
-SLACK_CHANNEL_ID = os.getenv('SLACK_CHANNEL_ID')  # Replace with your actual channel ID
+SLACK_BOT_TOKEN = os.getenv('SLACK_BOT_TOKEN')  
+SLACK_CHANNEL_ID = os.getenv('SLACK_CHANNEL_ID') 
 
 OPEN_HOUR = datetime.strptime("08:00", "%H:%M").time()
 CLOSE_HOUR = datetime.strptime("17:00", "%H:%M").time()
@@ -65,7 +65,7 @@ def scrape_printer_status():
                                'drumBlack':status_td[6].text,'drumCian':status_td[7].text,'drumMagenta':status_td[8].text,
                                'drumYellow':status_td[9].text,'belt':status_td[10].text,'fuser':status_td[11].text}
         
-        # determine cabinet
+        # Determine cabinet
         cabinet = next((c for c in CABINETS if c in printer_name), None)
 
         for supply, value in printer_percentages.items():

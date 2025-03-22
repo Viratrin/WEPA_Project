@@ -16,7 +16,7 @@ def update_printer_supplies(cabinet, supply, change):
     df.loc[df["Building"] == cabinet, supply] += change
     save_data(df)
 
-# Get all supplies in a row-wise format
+# Get quantity available of a supply at a given cabinet
 def get_quantity_available(cabinet, supply):
     df = load_data()
     row = df[df["Building"] == cabinet]

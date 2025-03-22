@@ -16,9 +16,9 @@ def handle_action():
     """Handles Slack button responses."""
 
     data = request.form
-    payload = json.loads(data["payload"])  # Slack sends form-encoded data
-    action = payload["actions"][0]  # Get the first action clicked
-    action_value = action["value"]  # Extract value
+    payload = json.loads(data["payload"])  
+    action = payload["actions"][0]  
+    action_value = action["value"]  
     user_id = payload["user"]["id"]
     response_url = payload["response_url"]
 
@@ -30,7 +30,7 @@ def handle_action():
     elif action_type == "no":
         message = f"❌ <@{user_id}> please notify Robert about the shortage of {supply}."
 
-    # Send an update message to Slack
+    # Send message to Slack
     requests.post(response_url, json={"text": message})
 
     global response_received
