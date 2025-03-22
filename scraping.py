@@ -19,7 +19,7 @@ CABINETS = {'Music', 'Science', 'Maxey', 'Olin', 'Penrose', 'Reid'}
 
 # Function to scrape printer statuses
 def scrape_printer_status():
-    url = "https://cs.wepanow.com/000whitman374.html&filter="
+    url = os.getenv('URL')
     now = datetime.now().time()
     
     try:
