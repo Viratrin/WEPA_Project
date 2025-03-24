@@ -8,6 +8,8 @@ import database
 import server
 import os
 from dotenv import load_dotenv
+    
+load_dotenv()
 
 SLACK_BOT_TOKEN = os.getenv('SLACK_BOT_TOKEN')  
 SLACK_CHANNEL_ID = os.getenv('SLACK_CHANNEL_ID') 
@@ -60,7 +62,7 @@ def scrape_printer_status():
 
         status_td = printer.find_next_siblings("td")
 
-        printer_percentages = {'tonerBlack':4, 'tonerCian':status_td[3].text, 
+        printer_percentages = {'tonerBlack':status_td[3].text, 'tonerCian':status_td[3].text, 
                                'tonerMagenta':status_td[4].text, 'tonerYellow':status_td[5].text,
                                'drumBlack':status_td[6].text,'drumCian':status_td[7].text,'drumMagenta':status_td[8].text,
                                'drumYellow':status_td[9].text,'belt':status_td[10].text,'fuser':status_td[11].text}

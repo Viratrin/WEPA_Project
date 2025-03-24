@@ -3,6 +3,9 @@ import requests
 import json
 import database
 import os
+from dotenv import load_dotenv
+    
+load_dotenv()
 
 app = Flask(__name__)
 
