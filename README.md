@@ -27,7 +27,7 @@ This project monitors printer supply levels across campus buildings and automate
    python server.py
    ```
 3. Run ngrok
-  ```bash
+   ```bash
    ngrok http 5000
    ```
 4. Start the monitoring script:

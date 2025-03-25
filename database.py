@@ -2,15 +2,15 @@ import pandas as pd
 
 EXCEL_FILE = "printer_supplies.xlsx"
 
-# Load spreadsheet into DataFrame
+# Load spreadsheet
 def load_data():
     return pd.read_excel(EXCEL_FILE)
 
-# Save DataFrame back to spreadsheet
+# Save back to spreadsheet
 def save_data(df):
     df.to_excel(EXCEL_FILE, index=False)
 
-# Update supply quantity for a cabinet (row-wise)
+# Update supply quantity for a cabinet
 def update_printer_supplies(cabinet, supply, change):
     df = load_data()
     df.loc[df["Building"] == cabinet, supply] += change

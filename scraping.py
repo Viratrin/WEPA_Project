@@ -36,8 +36,11 @@ def scrape_printer_status():
     printers = soup.find_all("td", width="18%")
     
     if not printers:
-        print("Status website issue.")
+        print("WEPA printer status website issue.")
         return
+
+
+    # Handle that both Reid printers have the same name
 
     reidPrinter = 1
 
@@ -55,11 +58,6 @@ def scrape_printer_status():
 
         status_td = printer.find_next_sibling("td").text.lower()
 
-        if "down" or "error" in status_td:
-            isPrinterDown = True
-        else:
-            isPrinterDown = False
-
         status_td = printer.find_next_siblings("td")
 
         printer_percentages = {'tonerBlack':status_td[3].text, 'tonerCian':status_td[3].text, 
@@ -72,13 +70,11 @@ def scrape_printer_status():
 
         for supply, value in printer_percentages.items():
             if int(value) <= 5 and database.get_quantity_available(cabinet, supply) <= 0 and OPEN_HOUR <= now <= CLOSE_HOUR:
-                send_slack_message(cabinet, supply, isPrinterDown)
+                send_slack_message(cabinet, supply)
 
-            #TODO!!!
-            # if int(value) == 100 and database.get_quantity_available(cabinet, supply) > 0:
-            #     database.update_printer_supplies(cabinet, supply, -1)
+        #TODO subtraction from database
 
-def send_slack_message(cabinet, supply, isPrinterDown):
+def send_slack_message(cabinet, supply):
     """Sends a Slack message with Yes/No buttons."""
 
     time.sleep(30)
@@ -117,11 +113,9 @@ def send_slack_message(cabinet, supply, isPrinterDown):
             }
         ]
     }
+    requests.post(url, headers=headers, data=json.dumps(payload))
 
-    if server.response_received:
-        requests.post(url, headers=headers, data=json.dumps(payload))
-        server.response_received = False
-
+# Checks every 25 minutes
 while True: 
     scrape_printer_status()
-    time.sleep(30)
+    time.sleep(1500)
