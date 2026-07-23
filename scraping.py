@@ -2,17 +2,15 @@ import requests
 from bs4 import BeautifulSoup
 import time
 from datetime import datetime
-import requests
 import json
 import database
-import server
 import os
 from dotenv import load_dotenv
-    
+
 load_dotenv()
 
-SLACK_BOT_TOKEN = os.getenv('SLACK_BOT_TOKEN')  
-SLACK_CHANNEL_ID = os.getenv('SLACK_CHANNEL_ID') 
+SLACK_BOT_TOKEN = os.getenv('SLACK_BOT_TOKEN')
+SLACK_CHANNEL_ID = os.getenv('SLACK_CHANNEL_ID')
 
 OPEN_HOUR = datetime.strptime("08:00", "%H:%M").time()
 CLOSE_HOUR = datetime.strptime("17:00", "%H:%M").time()
@@ -23,7 +21,7 @@ CABINETS = {'Music', 'Science', 'Maxey', 'Olin', 'Penrose', 'Reid'}
 def scrape_printer_status():
     url = os.getenv('URL')
     now = datetime.now().time()
-    
+
     try:
         response = requests.get(url)
         response.raise_for_status()  # Raise an error for failed requests
@@ -34,13 +32,10 @@ def scrape_printer_status():
     soup = BeautifulSoup(response.text, "html.parser")
 
     printers = soup.find_all("td", width="18%")
-    
+
     if not printers:
         print("WEPA printer status website issue.")
         return
-
-
-    # Handle that both Reid printers have the same name
 
     reidPrinter = 1
 
@@ -56,15 +51,13 @@ def scrape_printer_status():
                 printer_name += " #2"
                 reidPrinter = 3
 
-        status_td = printer.find_next_sibling("td").text.lower()
-
         status_td = printer.find_next_siblings("td")
 
-        printer_percentages = {'tonerBlack':status_td[3].text, 'tonerCian':status_td[3].text, 
+        printer_percentages = {'tonerBlack':status_td[3].text, 'tonerCian':status_td[3].text,
                                'tonerMagenta':status_td[4].text, 'tonerYellow':status_td[5].text,
                                'drumBlack':status_td[6].text,'drumCian':status_td[7].text,'drumMagenta':status_td[8].text,
-                               'drumYellow':status_td[9].text,'belt':status_td[10].text,'fuser':status_td[11].text}
-        
+                               'drumYellow':status_td[9].text,'belt':status_td[10].text,'fuser':4}
+
         # Determine cabinet
         cabinet = next((c for c in CABINETS if c in printer_name), None)
 
@@ -106,7 +99,7 @@ def send_slack_message(cabinet, supply):
                         "type": "button",
                         "text": {"type": "plain_text", "text": "No ❌"},
                         "style": "danger",
-                        "value":  f"no|{cabinet}|{supply}",
+                        "value": f"no|{cabinet}|{supply}",
                         "action_id": "no_action",
                     }
                 ]
@@ -116,6 +109,6 @@ def send_slack_message(cabinet, supply):
     requests.post(url, headers=headers, data=json.dumps(payload))
 
 # Checks every 25 minutes
-while True: 
+while True:
     scrape_printer_status()
     time.sleep(1500)

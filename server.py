@@ -4,7 +4,7 @@ import json
 import database
 import os
 from dotenv import load_dotenv
-    
+
 load_dotenv()
 
 app = Flask(__name__)
@@ -15,12 +15,11 @@ SLACK_BOT_TOKEN = os.getenv('SLACK_BOT_TOKEN')
 def handle_action():
     data = request.form
     payload = json.loads(data["payload"])
-    
+
     if payload["type"] == "view_submission":
         values = payload["view"]["state"]["values"]
         cabinet = values["cabinet_block"]["cabinet_action"]["selected_option"]["value"]
         supply = values["supply_block"]["supply_action"]["selected_option"]["value"]
-        user_id = payload["user"]["id"]
 
         # Subtract 1 from the selected supply
         database.update_printer_supplies(cabinet, supply, -1)
